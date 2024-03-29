@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @EnableConfigurationProperties(LLMProperties.class)
+@ComponentScan(basePackages = "com.aws")  
 public class GenAIModelInvokeSampleApplication {
 
     public static void main(String[] args) {
