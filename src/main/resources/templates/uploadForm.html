@@ -1,0 +1,38 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <style>
+    html {
+        font-family: sans-serif;
+    }
+</style>
+</head>
+<body>
+<h2>Upload image to Claude</h2>
+
+<div>
+    <form method="POST" enctype="multipart/form-data" action="/parse">
+        <table>
+            <tr>
+                <td>File to upload:</td>
+                <td><input type="file" name="file"/></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><input type="text" size="40" placeholder="What's in this image?" name="prompt" /></td>
+            </tr>
+            <tr/>
+            <tr>
+                <td><input type="submit" value="Upload"/></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div th:if="${message}">
+    <!--    <h2 th:text="${message}"/>-->
+    <p style="font-family:courier;" th:text="${message}"/>
+</div>
+
+</body>
+</html>
