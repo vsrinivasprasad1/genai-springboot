@@ -1,10 +1,10 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
     <style>
-    html {
-        font-family: sans-serif;
-    }
-</style>
+        html {
+            font-family: sans-serif;
+        }
+    </style>
 </head>
 <body>
 <h2>Upload image to Claude</h2>
@@ -19,7 +19,7 @@
         </table>
         <table>
             <tr>
-                <td><input type="text" size="40" placeholder="What's in this image?" name="prompt" /></td>
+                <td><input type="text" size="40" placeholder="What's in this image?" name="prompt"/></td>
             </tr>
             <tr/>
             <tr>
@@ -30,8 +30,8 @@
 </div>
 
 <div th:if="${message}">
-    <!--    <h2 th:text="${message}"/>-->
-    <p style="font-family:courier;" th:text="${message}"/>
+    <h4 th:text="${message}"/>
+    <!--    <p style="font-family:courier;" th:text="${message}"/>-->
 </div>
 
 </body>

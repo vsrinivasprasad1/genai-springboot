@@ -6,6 +6,8 @@ package com.aws.genai.service.bedrock;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
@@ -13,9 +15,6 @@ import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeAsyncClient;
 import software.amazon.awssdk.services.bedrockruntime.model.InvokeModelWithResponseStreamRequest;
 import software.amazon.awssdk.services.bedrockruntime.model.InvokeModelWithResponseStreamResponseHandler;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Base64;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 // snippet-end:[bedrock-runtime.java2.invoke_model_with_response_stream.import]
@@ -29,6 +28,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/get-started.html
  */
 public class InvokeModelWithResponseStream {
+    private static final Logger logger = LoggerFactory.getLogger(InvokeModelWithResponseStream.class);
+
 
     /**
      * Invokes the Anthropic Claude 2 model and processes the response stream.
@@ -39,6 +40,7 @@ public class InvokeModelWithResponseStream {
      * @return The generated response.
      */
     public static String invokeClaude(String prompt, boolean silent) {
+        logger.info("Invoking Claude with prompt: {}", prompt);
 
         BedrockRuntimeAsyncClient client = BedrockRuntimeAsyncClient.builder()
                 .region(Region.US_EAST_1)
@@ -66,7 +68,7 @@ public class InvokeModelWithResponseStream {
                     var completion = json.getString("completion");
                     finalCompletion.set(finalCompletion.get() + completion);
                     if (!silent) {
-                        System.out.print(completion);
+                        logger.debug(completion);
                     }
                 })
                 .build();
@@ -75,12 +77,14 @@ public class InvokeModelWithResponseStream {
                 .onEventStream(stream -> stream.subscribe(event -> event.accept(visitor)))
                 .onComplete(() -> {
                 })
-                .onError(e -> System.out.println("\n\nError: " + e.getMessage()))
+                .onError(e -> logger.error("\n\nError: " + e.getMessage()))
                 .build();
 
         client.invokeModelWithResponseStream(request, handler).join();
 
-        return finalCompletion.get();
+        String response = finalCompletion.get();
+        logger.info("Generated response: {}", response);
+        return response;
     }
 
     // snippet-start:[bedrock-runtime.java2.invoke_model_with_response_stream.main]
@@ -93,6 +97,7 @@ public class InvokeModelWithResponseStream {
      * @return
      */
     public static String invokeClaude3Sonnet(String encodeImage, String prompt, boolean silent) {
+        logger.info("Invoking Claude with prompt: {}", prompt);
         BedrockRuntimeAsyncClient client = BedrockRuntimeAsyncClient.builder()
                 .region(Region.US_EAST_1)
                 .build();
@@ -143,7 +148,7 @@ public class InvokeModelWithResponseStream {
                                     var completion = inner.get("text");
                                     finalCompletion.set(finalCompletion.get() + completion);
                                     if (!silent) {
-                                        System.out.print(completion);
+                                        logger.debug(completion.toString());
                                     }
                                 }
                             }
@@ -158,10 +163,12 @@ public class InvokeModelWithResponseStream {
                 .onEventStream(stream -> stream.subscribe(event -> event.accept(visitor)))
                 .onComplete(() -> {
                 })
-                .onError(e -> System.out.println("\n\nError: " + e.getMessage()))
+                .onError(e -> logger.error("\n\nError: " + e.getMessage()))
                 .build();
         client.invokeModelWithResponseStream(request, handler).join();
-        return finalCompletion.get();
+        String response = finalCompletion.get();
+        logger.info("Generated response: {}", response);
+        return response;
     }
 
 }
